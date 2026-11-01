@@ -180,3 +180,16 @@ details p { margin: 0 0 14px; color: var(--muted); }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* company-wide days off */
+.cloRow { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: flex-end; }
+.mini { display: flex; flex-direction: column; gap: 4px; font-weight: 700; font-size: 16px; color: var(--muted); }
+.mini input[type="date"] { font: inherit; font-size: 19px; font-weight: 600; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: #fff; color: var(--ink); }
+.btn.small { font-size: 18px; padding: 10px 20px; }
+.hint.bad { color: var(--bad); font-weight: 700; }
+.cloList { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cloList li { display: inline-flex; align-items: center; gap: 10px; background: var(--sun-soft); border: 2px solid #fcd34d; border-radius: 999px; padding: 6px 8px 6px 16px; font-weight: 700; }
+.cloList li.none { background: none; border: 0; color: var(--muted); font-weight: 500; padding-left: 0; }
+.cloList .x { font: inherit; font-size: 16px; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #fff; color: var(--bad); cursor: pointer; font-weight: 800; }
+.day.clo { background: var(--sun-soft); color: #92400e; }
+.sw.clo { background: var(--sun-soft); border: 1px solid #fcd34d; }

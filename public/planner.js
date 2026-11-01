@@ -21,6 +21,21 @@
   function dow(s) { return parseISO(s).getUTCDay() } // 0 = Sunday
   function diffDays(a, b) { return Math.round((parseISO(b).getTime() - parseISO(a).getTime()) / DAY) }
 
+
+  /**
+   * Company-wide closures (e.g. summer and winter break): [[from, to], ...] -> { 'YYYY-MM-DD': name }.
+   * Ignores invalid or reversed ranges and caps each range at 60 days. These days are off and cost no leave.
+   */
+  function closureMap(ranges, name) {
+    var out = {}
+    ;(ranges || []).forEach(function (r) {
+      if (!r || !/^\d{4}-\d{2}-\d{2}$/.test(r[0]) || !/^\d{4}-\d{2}-\d{2}$/.test(r[1]) || r[1] < r[0]) return
+      var n = Math.min(diffDays(r[0], r[1]), 59)
+      for (var i = 0; i <= n; i++) out[addDays(r[0], i)] = name
+    })
+    return out
+  }
+
   /**
    * One entry per calendar day from `from` to `to` (inclusive).
    * opts.workDays: weekday numbers that are normal working days (0 = Sunday ... 6 = Saturday). Default Mon-Fri.
@@ -240,6 +255,6 @@
 
   return {
     parseISO: parseISO, iso: iso, addDays: addDays, dow: dow, diffDays: diffDays, buildDays: buildDays, optimize: optimize,
-    blocks: blocks, plan: plan, bridges: bridges, toICS: toICS, holidayMap: holidayMap, regionsOf: regionsOf,
+    blocks: blocks, plan: plan, bridges: bridges, toICS: toICS, holidayMap: holidayMap, regionsOf: regionsOf, closureMap: closureMap,
   }
 })

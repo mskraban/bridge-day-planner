@@ -168,3 +168,16 @@ test('ics file is valid-looking: dates, escaping, folding, exclusive end', () =>
   const long = P.toICS([{ start: '2027-01-01', end: '2027-01-02', title: 'x'.repeat(200) }])
   for (const line of long.split('\r\n')) assert.ok(line.length <= 76, line.length)
 })
+
+test('company closures are free days off that cost no leave', () => {
+  const clo = P.closureMap([['2027-08-02', '2027-08-13'], ['bad', 'x'], ['2027-12-31', '2027-12-30']], 'Break')
+  assert.equal(Object.keys(clo).length, 12)
+  const days = P.buildDays({ from: '2027-07-01', to: '2027-09-30', holidays: clo })
+  const plan = P.plan(days, { year: 2027, budget: 0, minBreak: 4 })
+  assert.equal(plan.used, 0)
+  const b = plan.breaks.concat(plan.free).find(x => x.start <= '2027-08-02' && x.end >= '2027-08-13')
+  assert.ok(b && b.length >= 16) // Sat 31 Jul .. Sun 15 Aug
+  const withLeave = P.plan(days, { year: 2027, budget: 2, minBreak: 4 })
+  assert.ok(withLeave.totalOff >= plan.totalOff)
+  assert.ok(!withLeave.leave.some(d => clo[d]))
+})

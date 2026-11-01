@@ -41,6 +41,7 @@
     minBreak: [3, 4, 5, 7, 9].indexOf(parseInt(params.get('m'), 10)) >= 0 ? parseInt(params.get('m'), 10) : 4,
     region: params.get('r') || '',
     work: null,
+    closures: (params.get('cl') || '').split(',').map(function (x) { return x.split('_') }).filter(function (r) { return /^\d{4}-\d{2}-\d{2}$/.test(r[0]) && /^\d{4}-\d{2}-\d{2}$/.test(r[1]) && r[1] >= r[0] }).slice(0, 10),
     tab: 'plan',
   }
   var w = (params.get('w') || '').split('').map(Number).filter(function (d) { return d >= 0 && d <= 6 })
@@ -101,7 +102,9 @@
 
   function compute() {
     if (data.error || !data.list.length) { result = null; return }
-    var hol = P.holidayMap(data.list, state.region || null)
+    var realHol = P.holidayMap(data.list, state.region || null)
+    var clo = P.closureMap(state.closures, t('closureName'))
+    var hol = Object.assign({}, clo, realHol)
     var days = P.buildDays({ from: (state.year - 1) + '-11-15', to: (state.year + 1) + '-01-31', holidays: hol, workDays: state.work })
     var plan = P.plan(days, { year: state.year, budget: state.budget, minBreak: state.minBreak })
     var bridges = P.bridges(days, { year: state.year, maxGap: 3 })
@@ -111,8 +114,8 @@
       var opt = P.optimize(days, { budget: b, minBreak: state.minBreak, leaveFrom: from, leaveTo: to })
       margin.push(opt.score)
     }
-    var holInYear = Object.keys(hol).filter(function (s) { return s.slice(0, 4) === String(state.year) }).sort()
-    result = { hol: hol, days: days, plan: plan, bridges: bridges, margin: margin, holInYear: holInYear }
+    var holInYear = Object.keys(realHol).filter(function (s) { return s.slice(0, 4) === String(state.year) }).sort()
+    result = { hol: hol, clo: clo, days: days, plan: plan, bridges: bridges, margin: margin, holInYear: holInYear }
   }
 
   /* ----------------------------------------------------------------------- views */
@@ -187,6 +190,25 @@
         return h('button', { type: 'button', class: 'chip' + (state.lang === l ? ' on' : ''), 'aria-pressed': String(state.lang === l), text: l.toUpperCase(), onclick: function () { setLang(l) } })
       }))
 
+
+    var cFrom = h('input', { type: 'date', 'aria-label': t('from') })
+    var cTo = h('input', { type: 'date', 'aria-label': t('to') })
+    var cMsg = h('span', { class: 'hint bad', role: 'alert' })
+    var cList = h('ul', { class: 'cloList' }, state.closures.length ? state.closures.map(function (r, i) {
+      return h('li', null, h('span', { text: r[0] === r[1] ? fmtLong(r[0]) : fmtRange(r[0], r[1]) }),
+        h('button', { type: 'button', class: 'x', 'aria-label': t('removeClosure'), title: t('removeClosure'), text: '\u2715', onclick: function () { state.closures.splice(i, 1); renderControls(); update() } }))
+    }) : h('li', { class: 'none', text: t('noClosures') }))
+    var cAdd = h('button', { type: 'button', class: 'btn small', text: t('addClosure'), onclick: function () {
+      var a = cFrom.value, b = cTo.value || cFrom.value
+      if (!a || b < a) { cMsg.textContent = t('badRange'); return }
+      if (state.closures.length >= 10) return
+      state.closures.push([a, b]); state.closures.sort(function (x, y) { return x[0] < y[0] ? -1 : 1 })
+      renderControls(); update()
+    } })
+    var closureField = h('div', { class: 'field wide' }, h('span', { class: 'lbl', text: t('closures') }),
+      h('div', { class: 'cloRow' }, h('label', { class: 'mini' }, t('from'), cFrom), h('label', { class: 'mini' }, t('to'), cTo), cAdd),
+      cMsg, cList, h('span', { class: 'hint', text: t('closuresHint') }))
+
     c.append(
       h('div', { class: 'row' },
         field(t('country'), sel), field(t('year'), yr),
@@ -196,7 +218,8 @@
       h('div', { class: 'row' },
         h('div', { class: 'field wide' }, h('span', { class: 'lbl', text: t('workWeek') }), chips),
         regionSel ? field(t('region'), regionSel, t('regionHint')) : null,
-        h('div', { class: 'field langfield' }, h('span', { class: 'lbl', text: t('lang') }), langBtn)))
+        h('div', { class: 'field langfield' }, h('span', { class: 'lbl', text: t('lang') }), langBtn)),
+      h('div', { class: 'row' }, closureField))
   }
 
   function setLang(l) {
@@ -259,6 +282,7 @@
     q.set('c', state.cc); q.set('y', state.year); q.set('n', state.budget); q.set('m', state.minBreak)
     if (state.region) q.set('r', state.region)
     if (state.work.slice().sort().join('') !== defaultWork(state.cc).slice().sort().join('')) q.set('w', state.work.slice().sort().join(''))
+    if (state.closures.length) q.set('cl', state.closures.map(function (r) { return r.join('_') }).join(','))
     if (state.lang !== detectLangBase()) q.set('lang', state.lang)
     try { history.replaceState(null, '', location.pathname + '?' + q.toString()) } catch (e) { /* ignore */ }
   }
@@ -373,6 +397,7 @@
         var d = byIso[s]
         var cls = 'day'
         if (leave[s]) cls += ' leave'
+        else if (d && result.clo[s] && !d.weekend) cls += ' clo'
         else if (d && d.holiday) cls += ' hol'
         else if (d && d.weekend) cls += ' we'
         if (inBreak[s]) cls += ' brk'
@@ -381,7 +406,7 @@
       months.appendChild(h('section', { class: 'month' }, h('h4', { text: title }), grid))
     }
     var legend = h('ul', { class: 'legend' },
-      h('li', null, h('i', { class: 'sw hol' }), t('legendHol')), h('li', null, h('i', { class: 'sw we' }), t('legendWe')),
+      h('li', null, h('i', { class: 'sw hol' }), t('legendHol')), state.closures.length ? h('li', null, h('i', { class: 'sw clo' }), t('closureName')) : null, h('li', null, h('i', { class: 'sw we' }), t('legendWe')),
       h('li', null, h('i', { class: 'sw leave' }), t('legendLeave')), h('li', null, h('i', { class: 'sw brk' }), t('legendBreak')))
     return h('div', { class: 'calwrap' }, h('h3', { class: 'printonly', text: t('printTitle', { country: countryName(state.cc), year: state.year }) }), legend, months)
   }
