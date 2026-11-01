@@ -53,6 +53,8 @@ function head({ title, desc, path: p, lang, extra = '' }) {
     <meta property="og:image" content="${SITE}/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="${SITE}/og.png" />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/style.css" />
 ${extra}${ANALYTICS}
   </head>`
@@ -75,7 +77,7 @@ function page({ cc, lang, title, desc, h1, p }) {
   return `${head({ title, desc, path: p, lang, extra })}
   <body${cc ? ` data-cc="${cc}"` : ''}>
     <header class="top">
-      <a class="brand" href="/"><span class="logo">🌉</span> <span data-t="title">${lang === 'sl' ? 'Načrtovalec mostičkov' : 'Bridge Day Planner'}</span></a>
+      <a class="brand" href="/"><span class="logo">🌉</span> <span data-t="title">Bridge Day Planner</span></a>
       <nav aria-label="Countries"><a href="/bridge-days-slovenia">Slovenia</a><a href="/bridge-days-germany">Germany</a><a href="/bridge-days-austria">Austria</a><a href="/bridge-days-united-kingdom">UK</a><a href="/bridge-days-united-states">USA</a></nav>
     </header>
     <main class="wrap">

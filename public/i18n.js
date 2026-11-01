@@ -37,7 +37,7 @@
       printTitle: '{country} {year}: holidays and planned time off',
     },
     sl: {
-      title: 'Načrtovalec mostičkov',
+      title: 'Bridge Day Planner',
       tagline: 'Vzemite manj dopusta. Imejte daljše počitnice.',
       intro: 'Izberite državo in število dni dopusta. Poiščemo dneve, s katerimi iz praznikov naredite čim daljši počitek.',
       country: 'Država', year: 'Leto', leave: 'Dnevi dopusta, ki jih imate', minBreak: 'Štej počitek, dolg vsaj', workWeek: 'Vaši delovni dnevi',
