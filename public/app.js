@@ -11,14 +11,7 @@
   var thisYear = now.getFullYear()
   var params = new URLSearchParams(location.search)
 
-  function detectLang() {
-    var p = params.get('lang')
-    if (p === 'sl' || p === 'en') return p
-    var pageLang = document.documentElement.getAttribute('data-default-lang')
-    if (pageLang === 'sl' || pageLang === 'en') return pageLang // a page written for one language wins
-    try { var s = localStorage.getItem('bdp:lang'); if (s === 'sl' || s === 'en') return s } catch (e) { /* ignore */ }
-    return /^sl\b/i.test(navigator.language || '') ? 'sl' : 'en'
-  }
+  function detectLang() { return 'en' } // English only
   function detectCountry() {
     var q = (params.get('c') || '').toUpperCase()
     if (/^[A-Z]{2}$/.test(q)) return q
@@ -218,7 +211,7 @@
       h('div', { class: 'row' },
         h('div', { class: 'field wide' }, h('span', { class: 'lbl', text: t('workWeek') }), chips),
         regionSel ? field(t('region'), regionSel, t('regionHint')) : null,
-        h('div', { class: 'field langfield' }, h('span', { class: 'lbl', text: t('lang') }), langBtn)),
+        null),
       h('div', { class: 'row' }, closureField))
   }
 
@@ -283,7 +276,6 @@
     if (state.region) q.set('r', state.region)
     if (state.work.slice().sort().join('') !== defaultWork(state.cc).slice().sort().join('')) q.set('w', state.work.slice().sort().join(''))
     if (state.closures.length) q.set('cl', state.closures.map(function (r) { return r.join('_') }).join(','))
-    if (state.lang !== detectLangBase()) q.set('lang', state.lang)
     try { history.replaceState(null, '', location.pathname + '?' + q.toString()) } catch (e) { /* ignore */ }
   }
   function detectLangBase() { return /^sl\b/i.test(navigator.language || '') ? 'sl' : 'en' }

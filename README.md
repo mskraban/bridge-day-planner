@@ -6,7 +6,6 @@
 Pick your country and how many leave days you have. The planner finds the days that turn public holidays and weekends into the longest possible breaks.
 
 [![Open the planner](https://img.shields.io/badge/▶_open_the_planner-bridgedays-nu.vercel.app-0f766e?style=for-the-badge&logo=vercel&logoColor=white)](https://bridgedays-nu.vercel.app)
-[![Slovenski](https://img.shields.io/badge/🇸🇮_v_slovenščini-mosticki--slovenija-1d4ed8?style=for-the-badge)](https://bridgedays-nu.vercel.app/mosticki-slovenija)
 
 ![Countries](https://img.shields.io/badge/countries-204-0f766e?style=flat-square)
 ![Languages](https://img.shields.io/badge/languages-EN_%7C_SL-f59e0b?style=flat-square)
@@ -47,12 +46,8 @@ This planner does that for the whole year at once:
 - **Regional holidays** (for example Bavaria or Scotland) can be switched on by region.
 - **Your own work week**: tap the days you work. Friday to Saturday weekends and Saturday shifts work too.
 - **Company-wide days off**: add your summer or winter shutdown as date ranges. They count as free days and cost no leave, and the plan builds around them.
-- **English and Slovenian**, with correct Slovenian plurals (1 dan, 2 dneva, 3 dnevi, 5 dni). The language follows your browser and you can change it.
-- Dedicated pages for 26 countries and a Slovenian page, so each one is easy to find: [Slovenia](https://bridgedays-nu.vercel.app/bridge-days-slovenia), [Germany](https://bridgedays-nu.vercel.app/bridge-days-germany), [Austria](https://bridgedays-nu.vercel.app/bridge-days-austria), [United Kingdom](https://bridgedays-nu.vercel.app/bridge-days-united-kingdom), [United States](https://bridgedays-nu.vercel.app/bridge-days-united-states) and more.
-
-<div align="center">
-<img src="docs/slovene.jpg" alt="The planner in Slovenian" width="640">
-</div>
+- **English only**, kept simple and consistent.
+- Dedicated pages for 26 countries, so each one is easy to find: [Slovenia](https://bridgedays-nu.vercel.app/bridge-days-slovenia), [Germany](https://bridgedays-nu.vercel.app/bridge-days-germany), [Austria](https://bridgedays-nu.vercel.app/bridge-days-austria), [United Kingdom](https://bridgedays-nu.vercel.app/bridge-days-united-kingdom), [United States](https://bridgedays-nu.vercel.app/bridge-days-united-states) and more.
 
 ## 🧠 How the planning works
 
