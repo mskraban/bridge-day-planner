@@ -319,12 +319,19 @@
 
   function breakCard(b, extra) {
     var gainLeave = b.leave ? b.leave.length : b.gap
-    return h('article', { class: 'break' },
-      h('div', { class: 'when' }, h('strong', { text: fmtRange(b.start, b.end) }), h('span', { class: 'len', text: I.days(state.lang, b.length) })),
-      gainLeave > 0 ? h('div', { class: 'take' }, h('span', { class: 'pill leave', text: t('take') }), ' ' + (b.leave ? b.leave : b.gapDays).map(fmtDay).join(', ')) : null,
-      h('div', { class: 'eff', text: t('gain', { n: I.days(state.lang, b.length), leave: I.leaveDays(state.lang, gainLeave || 0) }) }),
-      (!b.holidays || !b.holidays.length) ? h('div', { class: 'incl' }, h('span', { class: 'pill flex', text: t('flexible') }), ' ' + t('flexHint')) : null,
-      (b.holidays && b.holidays.length) ? h('div', { class: 'incl' }, h('span', { class: 'pill hol', text: t('fromHol') }), ' ' + b.holidays.map(function (x) { return fmtShort(x.iso) + ' ' + x.name.split(' (')[0] }).join(' · ')) : null,
+    var takeList = gainLeave > 0 ? (b.leave ? b.leave : b.gapDays) : []
+    var hols = b.holidays || []
+    return h('article', { class: 'break' + (hols.length ? '' : ' flexi') },
+      h('header', { class: 'when' },
+        h('strong', { text: fmtRange(b.start, b.end) }),
+        h('span', { class: 'len' }, h('b', { text: String(b.length) }), ' ' + (b.length === 1 ? 'day' : 'days'))),
+      takeList.length ? h('div', { class: 'take' },
+        h('span', { class: 'k', text: t('take') }),
+        h('span', { class: 'v', text: takeList.map(fmtDay).join(', ') })) : null,
+      h('p', { class: 'eff', text: t('gain', { n: I.days(state.lang, b.length), leave: I.leaveDays(state.lang, gainLeave || 0) }) }),
+      hols.length ? h('ul', { class: 'incl' }, hols.map(function (x) {
+        return h('li', null, h('span', { class: 'hd', text: fmtShort(x.iso) }), h('span', { class: 'hn', text: x.name.split(' (')[0] }))
+      })) : h('p', { class: 'flexnote' }, h('span', { class: 'pill flex', text: t('flexible') }), ' ' + t('flexHint')),
       extra || null)
   }
 
