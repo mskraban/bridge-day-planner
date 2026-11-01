@@ -1,0 +1,10 @@
+{
+  "name": "bridge-day-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Find the best days to take off around public holidays",
+  "scripts": {
+    "build": "node scripts/build-pages.js",
+    "test": "node --test test/*.test.js"
+  }
+}
