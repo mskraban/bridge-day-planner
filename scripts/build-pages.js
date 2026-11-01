@@ -1,10 +1,10 @@
 // Builds the static pages: the home page, one page per country (for search), sitemap and robots.
-//   node scripts/build-pages.js            (uses https://bridgedays.vercel.app)
+//   node scripts/build-pages.js            (uses https://bridgedays-nu.vercel.app)
 //   SITE_URL=https://example.com node scripts/build-pages.js
 const fs = require('fs')
 const path = require('path')
 
-const SITE = (process.env.SITE_URL || 'https://bridgedays.vercel.app').replace(/\/$/, '')
+const SITE = (process.env.SITE_URL || 'https://bridgedays-nu.vercel.app').replace(/\/$/, '')
 const OUT = path.join(__dirname, '..', 'public')
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
